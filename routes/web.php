@@ -1,0 +1,42 @@
+<?php
+
+use App\Http\Controllers\QuoteController;
+use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
+|
+*/
+
+Route::get('/', function () {
+    // return Inertia::render('Welcome', [
+    //     'canLogin' => Route::has('login'),
+    //     'canRegister' => Route::has('register'),
+    //     'laravelVersion' => Application::VERSION,
+    //     'phpVersion' => PHP_VERSION,
+    // ]);
+    return redirect()->route('login');
+});
+
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
+])->group(function () {
+    Route::get('/dashboard', function () {
+        //return Inertia::render('Dashboard');
+        return redirect('quotes');
+    })->name('dashboard');
+    Route::resource('quotes',  QuoteController::class);
+    Route::get('quotes/searchcustomers/{term}', [QuoteController::class, 'searchCustomers'])->name('quotes.searchcustomers');
+    Route::get('quotes/searchservices/{term}', [QuoteController::class, 'searchServices'])->name('quotes.searchservices');
+    Route::get('quotes/selectedservice/{id}', [QuoteController::class, 'selectedService'])->name('quotes.selectedservice');
+});
