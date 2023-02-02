@@ -364,7 +364,11 @@
             <tbody>
                 <tr>
                     <td width="20%" style="font-size: 11px;">
-                        <div><img src="{{ asset("/storage/img/logo.png")  }}" width="81px" height="60px" /></div>
+                        <div>
+                            {{-- <img src="{{ asset("/build/assets/img/logo.png")  }}" width="81px" height="60px" /> --}}
+
+                            <img src="{{ Vite::asset('resources/images/logo.png') }}" width="81px" height="60px">
+                        </div>
                     </td>
                     <td>
                         <div><b>{{ $company->name}}</b></div>
