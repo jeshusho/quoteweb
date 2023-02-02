@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Service extends Model
 {
     use HasFactory;
+    
+    protected $with = ['group'];
 
     protected $fillable = [
         //'group_id',
@@ -31,5 +33,10 @@ class Service extends Model
     public function parts()
     {
         return $this->belongsToMany(Part::class,'service_part','service_id','part_id')->withPivot(['part_qty', 'measure']);
+    }
+
+    public function group()
+    {
+        return $this->belongsTo(Group::class);
     }
 }

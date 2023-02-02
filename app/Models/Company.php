@@ -15,6 +15,7 @@ class Company extends Model
         'comercial_name',
         'slogan',
         'address',
+        'phone',
         'departament',
         'province',
         'district',

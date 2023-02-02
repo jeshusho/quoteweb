@@ -37,7 +37,7 @@ const logout = () => {
         <div class="min-h-screen bg-gray-50">
             <nav class="bg-white border-b border-gray-100">
                 <!-- Primary Navigation Menu -->
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="2xl:max-w-screen-2xl max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="flex justify-between h-16">
                         <div class="flex">
                             <!-- Logo -->
@@ -52,6 +52,39 @@ const logout = () => {
                                 <NavLink :href="route('quotes.index')" :active="route().current('quotes.index') || route().current('quotes.create')">
                                     Presupuestos
                                 </NavLink>
+                            </div>
+
+                            <!-- Settings Dropdown -->
+                            <div class="ml-3 mt-4 relative" >
+                                <Dropdown align="left" width="48" >
+                                    <template #trigger>
+                                        <span  class="inline-flex rounded-md" >
+                                            <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition">
+                                                Configuración
+                                            </button>
+                                        </span>
+                                    </template>
+
+                                    <template #content>
+
+                                        <DropdownLink :href="route('customers.index')">
+                                            Clientes
+                                        </DropdownLink>
+
+                                        <DropdownLink :href="route('exchanges.index')">
+                                            Tipo de Cambio
+                                        </DropdownLink>
+
+                                        <DropdownLink :href="route('services.index')">
+                                            Servicios
+                                        </DropdownLink>
+
+                                        <DropdownLink :href="route('parts.index')">
+                                            Repuestos
+                                        </DropdownLink>
+
+                                    </template>
+                                </Dropdown>
                             </div>
                         </div>
 
@@ -274,7 +307,7 @@ const logout = () => {
 
             <!-- Page Heading -->
             <header v-if="$slots.header" class="bg-white shadow">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                <div class="2xl:max-w-screen-2xl max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     <slot name="header" />
                 </div>
             </header>

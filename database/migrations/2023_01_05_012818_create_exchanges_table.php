@@ -18,8 +18,10 @@ return new class extends Migration
             $table->string('source')->nullable();
             $table->date('date');
             $table->string('currency',3);
-            $table->float('buy_value', 5, 3);
-            $table->float('sell_value', 5, 3);
+            $table->float('real_buy', 5, 3)->nullable();
+            $table->float('real_sell', 5, 3)->nullable();
+            $table->float('sell', 5, 3)->nullable();
+            $table->float('exchange_rate', 7, 5)->nullable();
             $table->timestamps();
         });
     }

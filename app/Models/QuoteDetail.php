@@ -5,21 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class QuotePart extends Model
+class QuoteDetail extends Model
 {
     use HasFactory;
-    protected $table = 'quote_part';
-    public $timestamps = false;
 
+    public $timestamps = false;
+    
     protected $fillable = [
         'quote_id',
+        'service_id',
         'part_id',
-        'description',
-        'measure',
+        'part_qty',
         'quantity',
-        'unit_price',
-        'subtotal',
-        'igv',
-        'total'
+        'measure',
+        'description',
     ];
 }

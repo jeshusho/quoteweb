@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('quotes', function (Blueprint $table) {
             $table->id();
+            $table->uuid('external_id');
             $table->string('number');
             $table->date('date');
             //$table->foreign('user_id')->nullable()->references('id')->on('users');
@@ -34,8 +35,9 @@ return new class extends Migration
             $table->string('contact')->nullable();
             $table->string('brand')->nullable();
             $table->string('motor')->nullable();
+            $table->integer('payday')->nullable();
             $table->string('factor1',10)->nullable();
-            $table->string('factor2',10)->nullable();
+            $table->float('factor2', 5, 2)->nullable();
             $table->integer('factor3')->nullable();
             $table->integer('factor4')->nullable();
             $table->string('reference')->nullable();

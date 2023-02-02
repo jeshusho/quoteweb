@@ -13,13 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('quote_notes', function (Blueprint $table) {
+        Schema::create('logs', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('quote_id');
-            $table->foreign('quote_id')->references('id')->on('quotes');
-            $table->string('description');
-            $table->boolean('editable')->default(true);
-            //$table->timestamps();
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->string('module')->nullable();
+            $table->string('action')->nullable();
+            $table->string('description')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -30,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('quote_notes');
+        Schema::dropIfExists('logs');
     }
 };

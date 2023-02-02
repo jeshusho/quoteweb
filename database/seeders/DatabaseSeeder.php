@@ -51,6 +51,7 @@ class DatabaseSeeder extends Seeder
             ServicePartSeeder::class,
             ContactSeeder::class,
             CarSeeder::class,
+            SettingSeeder::class,
         ]);
     }
 }

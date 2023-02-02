@@ -32,6 +32,8 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->string('email')->nullable();
             $table->integer('payday')->default(0);
+            $table->string('currency',3)->default('PEN');
+            $table->float('factor2', 5, 2)->default(1);
             $table->string('contact')->nullable();
             $table->string('payment_day')->nullable();
             $table->string('payment_phone')->nullable();

@@ -1,6 +1,10 @@
 <?php
 
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\ExchangeController;
+use App\Http\Controllers\PartController;
 use App\Http\Controllers\QuoteController;
+use App\Http\Controllers\ServiceController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -37,6 +41,14 @@ Route::middleware([
     })->name('dashboard');
     Route::resource('quotes',  QuoteController::class);
     Route::get('quotes/searchcustomers/{term}', [QuoteController::class, 'searchCustomers'])->name('quotes.searchcustomers');
-    Route::get('quotes/searchservices/{term}', [QuoteController::class, 'searchServices'])->name('quotes.searchservices');
+    Route::get('quotes/searchservices/{term}/{jsonids}', [QuoteController::class, 'searchServices'])->name('quotes.searchservices');
+    Route::get('quotes/searchparts/{term}/{jsonids}', [QuoteController::class, 'searchParts'])->name('quotes.searchparts');
     Route::get('quotes/selectedservice/{id}', [QuoteController::class, 'selectedService'])->name('quotes.selectedservice');
+    Route::resource('exchanges', ExchangeController::class);
+    Route::resource('customers', CustomerController::class);
+    Route::resource('services', ServiceController::class);
+    Route::resource('parts', PartController::class);
 });
+Route::get('quotes/pdf/{extid}', [QuoteController::class, 'getPDF'])->name('quotes.pdf');
+Route::get('exchanges_createtoday', [ExchangeController::class, 'createToday'])->name('exchanges.createtoday');
+Route::get('exchanges_updatetoday', [ExchangeController::class, 'updateToday'])->name('exchanges.updatetoday');

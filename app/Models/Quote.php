@@ -8,7 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Quote extends Model
 {
     use HasFactory;
+
+    protected $with = ['services','parts','notes','details'];
+
     protected $fillable = [
+        'external_id',
         'number',
         'date',
         'user_id',
@@ -23,6 +27,7 @@ class Quote extends Model
         'contact',
         'brand',
         'motor',
+        'payday',
         'factor1',
         'factor2',
         'factor3',
@@ -41,4 +46,24 @@ class Quote extends Model
         'status',
         'is_paid',
     ];
+
+    public function services()
+    {
+        return $this->hasMany(QuoteService::class);
+    }
+
+    public function parts()
+    {
+        return $this->hasMany(QuotePart::class);
+    }
+
+    public function notes()
+    {
+        return $this->hasMany(QuoteNote::class);
+    }
+
+    public function details()
+    {
+        return $this->hasMany(QuoteDetail::class);
+    }
 }

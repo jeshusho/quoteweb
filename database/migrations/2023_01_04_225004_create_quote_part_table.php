@@ -23,7 +23,7 @@ return new class extends Migration
             $table->float('subtotal', 8, 2)->nullable();
             $table->float('igv', 8, 2)->nullable();
             $table->float('total', 8, 2)->nullable();
-            $table->timestamps();
+            //$table->timestamps();
         });
     }
 

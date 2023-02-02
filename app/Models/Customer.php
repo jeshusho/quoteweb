@@ -27,6 +27,8 @@ class Customer extends Model
         'phone',
         'email',
         'payday',
+        'currency',
+        'factor2',
         'contact',
         'payment_day',
         'payment_phone',
