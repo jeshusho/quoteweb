@@ -23,7 +23,7 @@
                 <thead>
                 <tr>
                     <th class="w-1/12 px-2 py-4 text-center"></th>
-                    <th class="w-9/12 px-2 py-4">Actividad</th>
+                    <th class="w-9/12 px-2 py-4">Descripción</th>
                     <th class="w-1/12 px-2 py-4 text-center">Acción</th>
                 </tr>
                 </thead>
