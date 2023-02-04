@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreign('group_id')->references('id')->on('groups');
             $table->integer('code')->unique();
             $table->string('description')->nullable();
-            $table->integer('repo');
+            $table->integer('repo')->nullable();
             $table->string('measure',50)->nullable();
             $table->boolean('have_igv')->default(true);
             $table->float('unit_price', 8, 2)->nullable();
@@ -31,6 +31,7 @@ return new class extends Migration
             $table->boolean('have_measures')->default(false);
             $table->boolean('have_parts')->default(false);
             $table->boolean('is_qty')->default(false);
+            $table->boolean('is_variable')->default(false);
             $table->boolean('status')->default(true);
             $table->timestamps();
         });

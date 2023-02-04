@@ -9,10 +9,10 @@ class Service extends Model
 {
     use HasFactory;
     
-    protected $with = ['group'];
+    protected $with = ['group','parts'];
 
     protected $fillable = [
-        //'group_id',
+        'group_id',
         'code',
         'description',
         'repo',
@@ -27,12 +27,13 @@ class Service extends Model
         'have_measures',
         'have_parts',
         'is_qty',
+        'is_variable',
         'status',
     ];
 
     public function parts()
     {
-        return $this->belongsToMany(Part::class,'service_part','service_id','part_id')->withPivot(['part_qty', 'measure']);
+        return $this->belongsToMany(Part::class,'service_part','service_id','part_id')->withPivot(['part_qty', 'measure'])->where('status',true);
     }
 
     public function group()

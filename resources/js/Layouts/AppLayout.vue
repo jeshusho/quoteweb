@@ -71,9 +71,9 @@ const logout = () => {
                                             Clientes
                                         </DropdownLink>
 
-                                        <DropdownLink :href="route('exchanges.index')">
+                                        <!-- <DropdownLink :href="route('exchanges.index')">
                                             Tipo de Cambio
-                                        </DropdownLink>
+                                        </DropdownLink> -->
 
                                         <DropdownLink :href="route('services.index')">
                                             Servicios

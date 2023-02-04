@@ -28,7 +28,13 @@ class QuoteController extends Controller
 
     public function __construct()
     {
-        $exchange = Exchange::orderBy('id','DESC')->first();
+        $today= Carbon::today('America/Lima')->isoFormat('YYYY-MM-DD');
+        $exchange = Exchange::where('date',$today)->first();
+        if(is_null($exchange)){
+            app('App\Http\Controllers\ExchangeController')->createToday();
+            app('App\Http\Controllers\ExchangeController')->updateToday();
+            $exchange = Exchange::orderBy('id','DESC')->first();
+        }
         $this->exchange_rate = $exchange->exchange_rate;
         $this->exchange_sell = $exchange->sell;
     }
@@ -100,11 +106,12 @@ class QuoteController extends Controller
         $ids = json_decode($jsonids);
         if($term !== 'all'){
             return Part::whereNotIn('id',$ids)
-                    ->where('description','like',"$term%")           
+                    ->where('description','like',"$term%")
+                    ->where('status',true)  
                     ->orderBy('description','ASC')->limit(10)->get();
         }
         else{
-            return Part::whereNotIn('id',$ids)->orderBy('description','ASC')->limit(10)->get();
+            return Part::whereNotIn('id',$ids)->where('status',true)->orderBy('description','ASC')->limit(10)->get();
         }
     }
 

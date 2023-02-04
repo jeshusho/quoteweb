@@ -488,7 +488,7 @@
                         <span class="ml-2">Guardar y Abrir PDF</span>
                     </button> -->
                     <button type="submit" class="btn btn-xl bg-indigo-700 hover:bg-indigo-900 xl:max-w-sm w-full mx-auto text-xl">
-                        <InboxArrowDownIcon class="w-6 h-6"></InboxArrowDownIcon>
+                        <InboxIcon class="w-6 h-6"></InboxIcon>
                         <span class="ml-2">Guardar</span>
                     </button>
                 </div>
@@ -533,7 +533,7 @@
     import axios from 'axios';
     import Datepicker from '@vuepic/vue-datepicker';
     import '@vuepic/vue-datepicker/dist/main.css';
-    import { XCircleIcon,PlusCircleIcon,InboxArrowDownIcon,DocumentIcon,ArrowSmallLeftIcon } from '@heroicons/vue/24/solid'
+    import { XCircleIcon,PlusCircleIcon,InboxIcon,DocumentIcon,ArrowSmallLeftIcon } from '@heroicons/vue/24/solid'
     /*import VueMultiselect from 'vue-multiselect';
     import Multiselect from '@vueform/multiselect'
     import {throttle} from "lodash";*/
@@ -550,7 +550,7 @@
             ref,
             XCircleIcon,
             PlusCircleIcon,
-            InboxArrowDownIcon,
+            InboxIcon,
             ArrowSmallLeftIcon,
             DocumentIcon,
         },
