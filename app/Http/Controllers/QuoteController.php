@@ -54,6 +54,7 @@ class QuoteController extends Controller
             'exchange_sell' =>  $this->exchange_sell,
             'default_payday' => intval(Setting::where('parameter','default_payday')->first()->value),
         ]);
+        //return $this->servicesparts();
     }
 
     public function edit($id){
@@ -123,10 +124,13 @@ class QuoteController extends Controller
     public function servicesparts(){
         return DB::table('service_part')
                     ->join('parts','parts.id','=','service_part.part_id')
+                    ->join('services','services.id','=','service_part.service_id')
                     ->select(   'service_part.service_id',
                                 'service_part.part_id',
                                 DB::raw('(CASE WHEN service_part.part_qty IS NULL THEN 1 ELSE service_part.part_qty END) AS part_qty'),
                                 'service_part.measure',
+                                'service_part.inherit_measure',
+                                //'services.code',
                                 'parts.description')
                     ->get();
     }
@@ -244,11 +248,11 @@ class QuoteController extends Controller
 
     public function mergeData($inputs)
     {
-
+        $quote_init_number = intval(Setting::where('parameter','quote_init_number')->first()->value);
         $values = [
             'external_id' => Str::uuid()->toString(),
             'user_id' => auth()->id(),
-            'number' => str_pad(Quote::count() + 1, 6, '0', STR_PAD_LEFT),
+            'number' => str_pad($quote_init_number + Quote::count(), 6, '0', STR_PAD_LEFT),
             'date' => Carbon::today('America/Lima')->isoFormat('YYYY-MM-DD'),
         ]; 
 

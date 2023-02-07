@@ -16,6 +16,7 @@ class QuotePart extends Model
         'part_id',
         'description',
         'measure',
+        'measure_code_ref',
         'quantity',
         'unit_price',
         'subtotal',

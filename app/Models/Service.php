@@ -33,7 +33,7 @@ class Service extends Model
 
     public function parts()
     {
-        return $this->belongsToMany(Part::class,'service_part','service_id','part_id')->withPivot(['part_qty', 'measure'])->where('status',true);
+        return $this->belongsToMany(Part::class,'service_part','service_id','part_id')->withPivot(['part_qty', 'measure','inherit_measure'])->where('status',true);
     }
 
     public function group()

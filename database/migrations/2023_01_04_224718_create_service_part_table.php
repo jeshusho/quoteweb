@@ -19,6 +19,7 @@ return new class extends Migration
             //$table->integer('service_qty')->constrained();
             $table->integer('part_qty')->nullable();
             $table->string('measure',100)->nullable();
+            $table->boolean('inherit_measure')->default(true);
             $table->timestamps();
         });
     }

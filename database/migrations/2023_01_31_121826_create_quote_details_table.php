@@ -23,8 +23,9 @@ return new class extends Migration
             $table->foreign('part_id')->references('id')->on('parts');
             $table->integer('part_qty')->nullable();
             $table->integer('quantity')->nullable();
-            $table->string('measure')->nullable();
-            $table->string('description')->nullable();
+            //$table->string('measure')->nullable();
+            //$table->boolean('inherit_measure')->nullable();
+            //$table->string('description')->nullable();
             //$table->timestamps();
         });
     }

@@ -17,7 +17,8 @@ class QuoteDetail extends Model
         'part_id',
         'part_qty',
         'quantity',
-        'measure',
-        'description',
+        //'measure',
+        //'inherit_measure',
+        //'description',
     ];
 }

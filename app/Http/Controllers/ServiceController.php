@@ -17,12 +17,14 @@ class ServiceController extends Controller
     protected $items;
     protected $groups;
     protected $parts;
+    protected $servicelist;
 
     public function __construct()
     {
         $this->items=Service::where('status',true)->orderBy('code','ASC')->paginate(20);
         $this->groups = Group::where('status',true)->orderBy('description','ASC')->get();
         $this->parts = Part::where('status',true)->orderBy('description','ASC')->get();
+        $this->servicelist = Service::select('id','code','description')->where('status',true)->where('have_measures',true)->orderBy('code','ASC')->get();
     }
 
     /**
@@ -36,6 +38,7 @@ class ServiceController extends Controller
             'items' => $this->transform($this->items),
             'groups' =>  $this->groups,
             'parts' =>  $this->parts,
+            'servicelist' => $this->servicelist,
         ]);
     }
 
@@ -76,8 +79,11 @@ class ServiceController extends Controller
             if(count($parts)>0 && $data['have_parts']){
                 $dataparts = [];
                 foreach ($parts as $row) {
+                    $im = $row['pivot']['inherit_measure'];
                     $dataparts[$row['id']] = [
-                        'part_qty' =>  $row['pivot']['part_qty']
+                        'part_qty' =>  $row['pivot']['part_qty'],
+                        'inherit_measure' =>  $im,
+                        'measure' => ($im) ? strval($item->code) : $row['pivot']['measure']
                     ];
                 }
                 $item->parts()->sync($dataparts);
@@ -158,8 +164,11 @@ class ServiceController extends Controller
             if(count($parts)>0 && $data['have_parts']){
                 $dataparts = [];
                 foreach ($parts as $row) {
+                    $im = $row['pivot']['inherit_measure'];
                     $dataparts[$row['id']] = [
-                        'part_qty' =>  $row['pivot']['part_qty']
+                        'part_qty' =>  $row['pivot']['part_qty'],
+                        'inherit_measure' =>  $im,
+                        'measure' => ($im) ? strval($item->code) : $row['pivot']['measure']
                     ];
                 }
                 $item->parts()->sync($dataparts);

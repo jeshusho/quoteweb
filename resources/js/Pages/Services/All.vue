@@ -72,8 +72,8 @@
                 No hay servicios creados aún
             </div>
         </div>
-        <jet-modal :show="showmodal" :closeable="true" @close="showmodal = null" maxWidth="2xl">
-            <div class="py-6 mb-4 max-w-xl mx-auto">
+        <jet-modal :show="showmodal" :closeable="true" @close="showmodal = null" maxWidth="3xl">
+            <div class="py-6 mb-4 max-w-2xl mx-auto">
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight py-4">
                     <span v-if="this.select.length===0">Nuevo Servicio</span>
                     <span v-else>Editar servicio: {{ this.select.description }}</span>
@@ -135,6 +135,7 @@
                                 <label class="label cursor-pointer">
                                     <span class="label-text">Requiere medidas</span> 
                                     <input  v-model="this.form.have_measures"
+                                            @change="changeServiceMeasure"
                                             type="checkbox" class="toggle" :true-value=1 :false-value=0 />
                                 </label>
                             </div>
@@ -167,24 +168,25 @@
                             <div class="p-3 w-full">
                                 <div v-if="this.form.parts.length>0" class="flex space-x-4 text-sm">
                                     <span>&nbsp;</span>
-                                    <span class="basis-8/12">Descripción</span>
-                                    <span class="basis-2/12">Cantidad</span>
+                                    <span class="basis-5/12">Descripción</span>
+                                    <span class="basis-1/12">Cantidad</span>
+                                    <span class="basis-4/12">Medida por defecto</span>
                                     <span class="basis-2/12"></span>
                                 </div>
                                 <div v-for="(part,index) in this.form.parts"
                                     :key="part.id"
                                     class="my-2"
                                     >
-                                    <div class="flex flex-row hover space-x-4">
+                                    <div class="flex flex-row hover space-x-4 items-center">
                                         <div class="text-sm">{{index+1}}</div>
-                                        <div class="basis-8/12">
+                                        <div class="basis-5/12">
                                             <select v-model="part.id"
                                                     class="select select-sm text-xs select-bordered w-full">
                                                 <option v-for="(p,index) in parts" :key="index" :value="p.id">{{p.description}}</option>
                                             </select>
                                         </div>
                                         
-                                        <div class="basis-2/12">
+                                        <div class="basis-1/12">
                                             <input v-model="part.pivot.part_qty"
                                                     type="number"
                                                     step=1
@@ -196,6 +198,20 @@
                                                     class="input input-sm input-bordered text-xs text-right w-full"
                                                     
                                         /></div>
+                                        <div class="basis-4/12">
+                                            <label class="label cursor-pointer">
+                                                <span class="label-text">De este servicio</span>
+                                                <input  v-model="part.pivot.inherit_measure"
+                                                        type="checkbox" class="toggle" :true-value=1 :false-value=0 />
+                                            </label>
+                                            <select v-if="!part.pivot.inherit_measure"
+                                                    v-model="part.pivot.measure"
+                                                    class="select select-sm text-xs select-bordered w-full">
+                                                    <option :value="null">NINGUNA</option>
+                                                    <option value="STD">Standard (STD)</option>
+                                                    <option v-for="(s,index) in servicelist" :key="index" :value="s.code">{{ s.code }} - {{ s.description }}</option>
+                                            </select>
+                                        </div>
                                         <div class="basis-2/12 flex flex-row content-center">
                                             <button class="rounded-full p-0"
                                                     @click.prevent="deletePart(index)">
@@ -412,18 +428,29 @@
                 this.form.parts.push({
                     id: null,
                     pivot: {
-                        part_qty:null
+                        part_qty:null,
+                        measure:null,
+                        inherit_measure:this.form.have_measures,
                     }
                 });
             },
             deletePart(index){
                 this.form.parts.splice(index,1);
             },
+            changeServiceMeasure(){
+                if(!this.form.have_measures){
+                    this.form.parts.forEach(element => {
+                        element.pivot.inherit_measure = false;
+                    });
+                }
+
+            }
         },
         props: {
             items: Object,
             groups: Object,
             parts: Object,
+            servicelist: Object,
             default_payday: Number,
             message: String,
             response: String,

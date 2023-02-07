@@ -296,12 +296,12 @@
                                 <div class="basis-1/12 flex flex-row content-center">
                                     <button v-if="quoteServices.length>1"
                                         class="rounded-full p-0"
-                                        @click="deleteService(index,service)">
+                                        @click.prevent="deleteService(index,service)">
                                         <XCircleIcon class="h-8 w-8 text-red-800 "/>
                                     </button>
                                     <button v-if="index==quoteServices.length-1" 
                                             class="rounded-full p-0"
-                                            @click="addService">
+                                            @click.prevent="addService">
                                             <PlusCircleIcon class="h-8 w-8 text-blue-800"/>        
                                     </button>
                                 </div>
@@ -788,7 +788,9 @@
                 this.quoteParts[index] = {
                     part_id: part.id,
                     description: part.description,
-                    measure: part.measure,
+                    //measure: part.measure,
+                    measure: (parseInt(part.measure)>=0) ? null : part.measure,
+                    measure_code_ref: (parseInt(part.measure)>=0) ? parseInt(part.measure) : null,
                     quantity: 1,
                 }
                 this.quotepartsids[index]=part.id;
@@ -817,6 +819,7 @@
                     part_id: null,
                     description: '',
                     measure: null,
+                    measure_code_ref: null,
                     quantity: null
                 });
             },
@@ -829,12 +832,28 @@
                 var filtered = this.splist.filter(function(value){
                     return value.service_id !== service.service_id
                 })
+                var filtereddel = this.splist.filter(function(value){
+                    return value.service_id === service.service_id
+                })
                 this.splist = filtered;
+                var filteredqp = null;
+                if(filtereddel.length>0){
+                    filtereddel.forEach(element => {
+                        filteredqp = this.quoteParts.filter(function(value){
+                            return value.part_id === element.part_id
+                        })
+                        this.quoteParts = filteredqp;
+                    })
+                }
+                this.quoteParts.forEach(element => {
+                    if(element.measure_code_ref === service.code) element.measure = null;
+                });
+
                 //console.log(this.splist);
                 this.quoteServices.splice(index,1);
                 this.quoteservicesids.splice(index,1);
                 //console.log(this.quoteservicesids);
-                this.updateQuoteParts();
+                //this.updateQuoteParts();
                 this.quoteServices.forEach((element) => {
                     this.updateSubtotalByService(element);
                 });
@@ -865,7 +884,26 @@
                 this.quoteservicesids[index]=service.id;
                 if(this.lastservice !== []) this.deletePartsByService(this.lastservice.service_id)
                 this.addPartsByService(service.id);
-                this.updateQuoteParts();
+                //this.updateQuoteParts();
+                // incio
+                // this.splist.forEach((element) => {
+                //     let part = {
+                //         part_id: element.part_id,
+                //         description: element.description,
+                //         measure: null,
+                //         quantity: element.quantity
+                //     }
+                //     var indexqp = this.quoteParts.findIndex( function(element){
+                //         return element.part_id === part.part_id;
+                //     });
+                //     if(indexqp>=0){
+                //         this.quoteParts[indexqp].quantity = this.quoteParts[indexqp].quantity + part.quantity;
+                //     }
+                //     else{
+                //         this.quoteParts.push(part);
+                //     }
+                // });
+                // fin
                 this.updateTotals();
                 this.services=[];
                 this.lastservice = [];
@@ -910,7 +948,26 @@
                     if(this.lastservice !== []) this.deletePartsByService(this.lastservice.service_id)
                     this.addPartsByService(this.selectedService.id);
                     this.quoteservicesids[index]=this.selectedService.id;
-                    this.updateQuoteParts(); 
+                    //this.updateQuoteParts();
+                    // incio
+                    // this.splist.forEach((element) => {
+                    //     let part = {
+                    //         part_id: element.part_id,
+                    //         description: element.description,
+                    //         measure: null,
+                    //         quantity: element.quantity
+                    //     }
+                    //     var indexqp = this.quoteParts.findIndex( function(element){
+                    //         return element.part_id === part.part_id;
+                    //     });
+                    //     if(indexqp>=0){
+                    //         this.quoteParts[indexqp].quantity = this.quoteParts[indexqp].quantity + part.quantity;
+                    //     }
+                    //     else{
+                    //         this.quoteParts.push(part);
+                    //     }
+                    // });
+                    // fin
                     this.updateTotals();          
                     //this.quoteservicesids.push(this.selectedService.id);
                     this.services=[];
@@ -951,21 +1008,17 @@
                 if(this.parts.length>0){
                     console.log('this.parts0',this.parts[0]);
                     this.selectedPart = this.parts[0];      
-                    //console.log('selectedService',this.selectedService);
                     this.quoteParts[index] = {
                         part_id: this.parts[0].id,
                         description: this.parts[0].description,
-                        measure: this.parts[0].measure,
+                        //measure: this.parts[0].measure,
+                        measure: (parseInt(this.parts[0].measure)>=0) ? null : this.parts[0].measure,
+                        measure_code_ref: (parseInt(this.parts[0].measure)>=0) ? parseInt(this.parts[0].measure) : null,
                         quantity: 1,
                     }
                     this.quotepartsids[index]=this.parts[0].id;
                     this.parts=[];
                     this.lastpart = [];
-                    //console.log(`measure_part_${index}`);
-                    //document.getElementById(`measure_part_${index}`).focus();
-                    //document.getElementById("measure_part_0").focus();
-                    //this.$ref[`measure_part_${index}`].focus();
-                    
                     this.$nextTick(() => {
                         this.$refs[`measure_part_${index}`][0].focus();
                     });
@@ -977,6 +1030,7 @@
                             part_id: null,
                             description: '',
                             measure: null,
+                            measure_code_ref: null,
                             quantity: null,
                         }
                     }
@@ -1014,17 +1068,45 @@
                         part_id: element.part_id,
                         part_qty: element.part_qty,
                         quantity: element.part_qty,
-                        measure: element.measure,
-                        description: element.description
+                        //measure: element.measure,
+                        //inherit_measure: element.inherit_measure,
+                        //description: element.description
                     })
+                    let part = {
+                        part_id: element.part_id,
+                        description: element.description,
+                        measure: (parseInt(element.measure)>=0) ? null : element.measure,
+                        measure_code_ref: (parseInt(element.measure)>=0) ? parseInt(element.measure) : null,
+                        quantity: element.part_qty
+                    }
+                    var indexqp = this.quoteParts.findIndex( function(eqp){
+                        return eqp.part_id === part.part_id;
+                    });
+                    if(indexqp>=0){
+                        this.quoteParts[indexqp].quantity = this.quoteParts[indexqp].quantity + part.quantity;
+                    }
+                    else{
+                        this.quoteParts.push(part);
+                        if(!element.inherit_measure){
+                            let indexsref = this.quoteServices.findIndex( function(esref){
+                                return esref.code === part.measure_code_ref;
+                            });
+                            this.updateMeasuerByService(this.quoteServices[indexsref]);
+                        }
+                    }
                 });
-                //console.log(this.splist);
             },
             deletePartsByService(service_id){
                 var filter = this.splist.filter( obj => {
                     return obj.service_id !== service_id;
                 });
                 this.splist = filter;
+            },
+            updatePartsByService(service){
+                // var filter = this.splist.forEach( obj => {
+                //    if(obj.service_id === service.service_id) 
+                // });
+                // this.splist = filter;
             },
             updateQuoteParts(){
                 this.quoteParts=[];
@@ -1062,28 +1144,65 @@
                             let indexsp = this.splist.findIndex( function(element){
                                 return element.service_id === fp.service_id && element.part_id === fp.part_id
                             });
+                            let ini_quantity = this.splist[indexsp].quantity;
                             this.splist[indexsp].quantity = this.splist[indexsp].part_qty * service.quantity;
+
+                            let indexqp = this.quoteParts.findIndex( function(element){
+                                return element.part_id === fp.part_id;
+                            });
+                            if(indexqp>=0){
+                                this.quoteParts[indexqp].quantity = this.quoteParts[indexqp].quantity - ini_quantity + this.splist[indexsp].quantity;
+                            }
                         });
+
+                        // this.splist.forEach((element) => {
+                        //     let part = {
+                        //         part_id: element.part_id,
+                        //         description: element.description,
+                        //         measure: element.measure,
+                        //         quantity: element.quantity
+                        //     }
+                        //     var indexqp = this.quoteParts.findIndex( function(element){
+                        //         return element.part_id === part.part_id;
+                        //     });
+                        //     if(indexqp>=0){
+                        //         this.quoteParts[indexqp].quantity = this.quoteParts[indexqp].quantity + part.quantity;
+                        //     }
+                        //     else{
+                        //         this.quoteParts.push(part);
+                        //     }
+                        // });
                     }
                 }
-                this.updateQuoteParts();
+                //this.updateQuoteParts();
                 this.updateTotals();
             },
             updateMeasuerByService(service){
-                if(service.service_id !== null){
-                    let filterparts = this.servicesparts.filter(element => {
-                        return element.service_id === service.service_id;
-                    });
-                    if(filterparts.length>0){
-                        filterparts.forEach((fp) =>{
-                            let indexsp = this.splist.findIndex( function(element){
-                                return element.service_id === fp.service_id && element.part_id === fp.part_id
-                            });
-                            this.splist[indexsp].measure =  service.measure;
-                        });
-                    }
-                }
-                this.updateQuoteParts();
+                this.quoteParts.forEach(element => {
+                    if(element.measure_code_ref === service.code) element.measure = service.measure;
+                });
+                // if(service.service_id !== null){
+                //     let filterparts = this.servicesparts.filter(element => {
+                //         return ((parseInt(element.measure) === service.code && !element.inherit_measure) || (element.service_id === service.service_id &&  element.inherit_measure));
+                //     });
+                //     if(filterparts.length>0){
+                //         filterparts.forEach((fp) =>{
+                //             let indexsp = this.splist.findIndex( function(element){
+                //                 return element.service_id === fp.service_id && element.part_id === fp.part_id;
+                //             });
+                //             //console.log('indexsp',indexsp);
+                //             if(indexsp>=0){
+                //                 this.splist[indexsp].measure =  service.measure;
+                //                 let pid = this.splist[indexsp].part_id;
+                //                 let indexqp = this.quoteParts.findIndex( function(eqp){
+                //                     return eqp.part_id === pid;
+                //                 });
+                //                 this.quoteParts[indexqp].measure = service.measure;
+                //             }
+                //         });
+                //     }
+                // }
+                //this.updateQuoteParts();
             },
             onChangeFactor2(){
                 this.quoteServices.forEach((element) => {

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('part_id')->constrained();
             $table->string('description')->nullable();
             $table->string('measure')->nullable();
+            $table->integer('measure_code_ref')->nullable();
             $table->integer('quantity')->nullable();
             $table->float('unit_price', 8, 2)->nullable();
             $table->float('subtotal', 8, 2)->nullable();

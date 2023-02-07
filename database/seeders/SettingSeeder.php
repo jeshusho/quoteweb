@@ -35,5 +35,9 @@ class SettingSeeder extends Seeder
                     'parameter' => 'quote_contact_consultants',
                     'value' => 'Celular: 920011728 / 955852948'
                 ]);
+        Setting::create([
+                    'parameter' => 'quote_init_number',
+                    'value' => '1800'
+                ]);
     }
 }

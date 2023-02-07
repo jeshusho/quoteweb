@@ -20,6 +20,6 @@ class Part extends Model
 
     public function services()
     {
-        return $this->belongsToMany(Service::class,'service_part','part_id','service_id')->withPivot(['part_qty', 'measure']);
+        return $this->belongsToMany(Service::class,'service_part','part_id','service_id')->withPivot(['part_qty', 'measure','inherit_measure']);
     }
 }

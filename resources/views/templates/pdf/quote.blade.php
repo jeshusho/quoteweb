@@ -71,10 +71,9 @@
       table tr td {
           font-family: sans-serif;
           font-size: 9px;
-          
           vertical-align: middle;
-          padding-top:2px;
-          padding-bottom:2px;
+          padding-top:1px;
+          padding-bottom:1px;
       }
       table tr th {
           padding-top:3px;
@@ -171,11 +170,12 @@
       h1,
       h2,
       h3,
-      h4 {
+      h4,
+      h5, {
         color: #000000;
         font-family: sans-serif;
         font-weight: 400;
-        line-height: 1.4;
+        line-height: 1.3;
         margin: 0;
         margin-bottom: 5px;
         margin-top: 10px; 
@@ -193,7 +193,7 @@
       ul,
       ol {
         font-family: sans-serif;
-        font-size: 10px;
+        font-size: 9px;
         font-weight: normal;
         margin: 0;
         margin-bottom: 10px;
@@ -316,7 +316,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="4" style="font-size: 10px;">
+                    <td colspan="4" style="font-size: 9px;">
                         Dirección:
                         @if (!is_null($quote->address)&&$quote->address!=='')
                             &nbsp;{{ $quote->address }}<br>
@@ -324,7 +324,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="2" width="50%" style="font-size: 10px;">
+                    <td colspan="2" width="50%" style="font-size: 9px;">
                         Telef:
                         @if (!is_null($quote->phone)&&$quote->phone!=='')
                             &nbsp;{{ $quote->phone }}
@@ -333,7 +333,7 @@
                             @endif
                         @endif
                     </td>
-                    <td colspan="2" width="50%" style="font-size: 10px;">
+                    <td colspan="2" width="50%" style="font-size: 9px;">
                         E-mail:
                         @if (!is_null($quote->email)&&$quote->email!=='')
                             &nbsp;{{ $quote->email }}<br>
@@ -341,13 +341,13 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="2" style="font-size: 10px;">
+                    <td colspan="2" style="font-size: 9px;">
                         Atención a::
                         @if (!is_null($quote->contact)&&$quote->contact!=='')
                             &nbsp;{{ $quote->contact }}<br>
                         @endif
                     </td>
-                    <td colspan="2" style="font-size: 10px;">
+                    <td colspan="2" style="font-size: 9px;">
                         Referencia:
                         @if (!is_null($quote->reference)&&$quote->reference!=='')
                             &nbsp;{{ $quote->reference }}<br>
@@ -355,19 +355,19 @@
                     </td>
                 </tr>
                 <tr>
-                    <td width="25%" style="font-size: 10px;">
+                    <td width="25%" style="font-size: 9px;">
                         Marca:
                         @if (!is_null($quote->brand)&&$quote->brand!=='')
                             &nbsp;{{ $quote->brand }}
                         @endif
                     </td>
-                    <td width="25%" style="font-size: 10px;">
+                    <td width="25%" style="font-size: 9px;">
                         Motor:
                         @if (!is_null($quote->motor)&&$quote->motor!=='')
                             &nbsp;{{ $quote->motor }}
                         @endif
                     </td>
-                    <td colspan="2" width="50%" style="font-size: 10px;text-align:right;vertical-align:top;">
+                    <td colspan="2" width="50%" style="font-size: 9px;text-align:right;vertical-align:top;">
                         @if (!is_null($quote->scheduled_date))
                         <div>Fecha Programada:&nbsp;{{ $quote->scheduled_date }}</div>
                         @endif
@@ -378,8 +378,6 @@
                 </tr>
             </tbody>
         </table>
-
-        <h4>SERVICIOS</h4>
         <table>
             <tr>
                 <th>#</th>
@@ -412,13 +410,13 @@
         <table style="margin-bottom: 20px;">
             <tr>
                 <td width="75%" style="vertical-align:top;padding-right:20px;">
-                    <h3>REPUESTOS A TRAER</h3>
+                    <h4>REPUESTOS A TRAER</h4>
                     <table>
                         <tr>
                             <th>#</th>
-                            <th style="font-size:10px;">Descripción</th>
-                            <th style="font-size:10px;">Medida</th>
-                            <th style="font-size:10px;">Cantidad</th>
+                            <th style="font-size:9px;">Descripción</th>
+                            <th style="font-size:9px;">Medida</th>
+                            <th style="font-size:9px;">Cantidad</th>
                         </tr>
                         <tbody>
                             @foreach ($quote->parts as $part)
@@ -426,28 +424,28 @@
                                         style="background-color:#f2f2f2;"
                                     @endif
                                 >
-                                    <td>{{ $loop->index+1 }}</td>
-                                    <td>{{ $part->description }}</td>
-                                    <td style="text-align:center">{{ $part->measure }}</td>
-                                    <td style="text-align:center">{{ $part->quantity }}</td>
+                                    <td style="font-size:7px;">{{ $loop->index+1 }}</td>
+                                    <td style="font-size:7px;">{{ $part->description }}</td>
+                                    <td style="font-size:7px;text-align:center">{{ $part->measure }}</td>
+                                    <td style="font-size:7px;text-align:center">{{ $part->quantity }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
                 </td>
-                <td width="25%" style="vertical-align:top;padding-top:33px;">
+                <td width="25%" style="vertical-align:top;padding-top:26px;">
                     <table>
                         <tr style="border-top:1px solid #f2f2f2;">
-                            <td style="background-color: #f2f2f2;font-weight:700;font-size:12px;padding:3px;">Subtotal</td>
-                            <td style="text-align:right;font-weight:700;font-size:12px;">{{ $quote->symbol }} {{ number_format($quote->subtotal,2) }}</td>
+                            <td style="background-color: #f2f2f2;font-weight:700;font-size:10px;padding:3px;">SUBTOTAL</td>
+                            <td style="text-align:right;font-weight:700;font-size:10px;">{{ $quote->symbol }} {{ number_format($quote->subtotal,2) }}</td>
                         </tr>
                         <tr style="border-top:1px solid #f2f2f2;">
-                            <td style="background-color: #f2f2f2;font-weight:700;font-size:12px;padding:3px;">IGV</td>
-                            <td style="text-align:right;font-weight:700;font-size:12px;">{{ $quote->symbol }} {{ number_format($quote->igv,2) }}</td>
+                            <td style="background-color: #f2f2f2;font-weight:700;font-size:10px;padding:3px;">IGV</td>
+                            <td style="text-align:right;font-weight:700;font-size:10px;">{{ $quote->symbol }} {{ number_format($quote->igv,2) }}</td>
                         </tr>
                         <tr style="border-top:1px solid #f2f2f2;">
-                            <td style="background-color: #f2f2f2;font-weight:700;font-size:12px;padding:3px;">Total</td>
-                            <td style="text-align:right;font-weight:700;font-size:12px;">{{ $quote->symbol }} {{ number_format($quote->total,2) }}</td>
+                            <td style="background-color: #f2f2f2;font-weight:700;font-size:11px;padding:3px;">TOTAL</td>
+                            <td style="text-align:right;font-weight:700;font-size:11px;">{{ $quote->symbol }} {{ number_format($quote->total,2) }}</td>
                         </tr>
                         @if ($quote->payday>0)
                             <tr>
@@ -462,7 +460,7 @@
             </tr>
         </table>
         @if (count($quote->notes)>0)
-        <h4>NOTAS</h4>
+        <h5>NOTAS</h5>
         <ul>
             @foreach ($quote->notes as $note)
             <li>
@@ -471,13 +469,13 @@
             @endforeach
         </ul>           
         @endif
-        <div style="font-size:11px;margin-top:20px;">IMPORTANTE:</div>
+        <div style="font-size:9px;margin-top:20px;">IMPORTANTE:</div>
         <ul>
             <li>{{$quote_important_note_1}}</li>
             <li>{{$quote_important_note_2}}</li>
             <li>{{$quote_important_note_3}}</li>
         </ul>
-        <div style="font-size:10px;margin-top:20px;">CONTACTO ASESORES DE SERVICIO: {{ $quote_contact_consultants }}</div>
+        <div style="font-size:9px;margin-top:20px;">CONTACTO ASESORES DE SERVICIO: {{ $quote_contact_consultants }}</div>
     </body>
         <footer>
         WS Rectificaciones &copy; <?php echo date("Y");?> 

@@ -52,6 +52,10 @@ class DatabaseSeeder extends Seeder
             ContactSeeder::class,
             CarSeeder::class,
             SettingSeeder::class,
+            CountrySeeder::class,
+            DepartmentSeeder::class,
+            ProvinceSeeder::class,
+            DistrictSeeder::class,
         ]);
     }
 }
