@@ -11,6 +11,7 @@ use App\Models\Organization;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\Cursor;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Log;
 
 class PadronController extends Controller
 {
@@ -262,5 +263,9 @@ class PadronController extends Controller
    
         file_put_contents($filepath, $raw_file_data);
         //return (filesize($filepath) > 0)? true : false;
+    }
+
+    public function test(){
+        Log::info('Hola');
     }
 }
