@@ -538,6 +538,7 @@
     import axios from 'axios';
     import Datepicker from '@vuepic/vue-datepicker';
     import '@vuepic/vue-datepicker/dist/main.css';
+    import { useToast } from "vue-toastification";
     import { XCircleIcon,PlusCircleIcon,InboxIcon,DocumentIcon,ArrowSmallLeftIcon,MagnifyingGlassIcon } from '@heroicons/vue/24/solid'
     /*import VueMultiselect from 'vue-multiselect';
     import Multiselect from '@vueform/multiselect'
@@ -588,12 +589,30 @@
                 return `${day}/${month}/${year} ${hours}:${minutes} ${med}`;
             }
 
+            const toast = useToast();
+            const toast_options = {
+                position: "bottom-left",
+                timeout: 3000,
+                closeOnClick: true,
+                pauseOnFocusLoss: true,
+                pauseOnHover: true,
+                draggable: true,
+                draggablePercent: 0.6,
+                showCloseButtonOnHover: false,
+                hideProgressBar: true,
+                closeButton: "button",
+                icon: true,
+                rtl: false
+            };
+
             return {
                 scheduledDate,
                 executedDate,
                 formatScheduledDate,
                 formatExecutedDate,
                 startTime,
+                toast,
+                toast_options
                 //quote,
             }
         },
@@ -1260,8 +1279,13 @@
                 if(this.form.document_number!=''){
                     axios.get(`/search/ruc/${this.form.document_number}`).then( response =>{
                         console.log(response.data);
-                        this.form.name = response.data.name;
-                        this.form.address = response.data.address;
+                        if(response.data.success){
+                            this.form.name = response.data.data.name;
+                            this.form.address = response.data.data.address;
+                        }
+                        else{
+                            this.toast.error(response.data.message, this.toast_options);
+                        }
                     }).catch( errors => {
                         console.log(response.errors);
                     });
