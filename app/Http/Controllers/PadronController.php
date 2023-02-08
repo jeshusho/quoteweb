@@ -112,7 +112,7 @@ class PadronController extends Controller
             $key = 'padron_reducido_ruc';
             $file =  str_replace(DIRECTORY_SEPARATOR, '/', public_path("{$prefix}".DIRECTORY_SEPARATOR."{$key}.{$prefix2}"));
     
-            $query = "LOAD DATA LOCAL INFILE '" . $file . "'
+            $query = "LOAD DATA INFILE '" . $file . "'
             INTO TABLE organizations  FIELDS TERMINATED BY '|' LINES TERMINATED BY '\n' IGNORE 1 LINES
                     (ruc,
                     nombre_razon_social,
