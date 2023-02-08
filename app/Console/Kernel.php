@@ -26,7 +26,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->command('update:census')->dailyAt('01:27');
+        $schedule->command('update:census')->dailyAt('01:28');
         //$schedule->call('App\Http\Controllers\PadronController@test')->everyMinute();
     }
 
