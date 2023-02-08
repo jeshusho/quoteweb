@@ -81,20 +81,24 @@
                 <hr>
                 <form @submit.prevent="submit" >
                     <div class="justify-center w-full">
-                        <div class="form-control w-full">
-                            <label class="label">
-                                <span class="label-text">Nombre o Razón social</span>
-                            </label>
-                            <input v-model="form.name" type="text" placeholder="" class="input input-bordered input-sm w-full" required />
-                        </div>
                         <div class="flex flex-row w-full space-x-4">
+                            <div class="form-control basis-5/6">
+                                <label class="label">
+                                    <span class="label-text">Nombre o Razón social</span>
+                                </label>
+                                <input v-model="form.name" type="text" placeholder="" class="input input-bordered input-sm w-full" required />
+                            </div>
                             <div class="form-control basis-1/6">
                                 <label class="label">
                                     <span class="label-text">Código</span>
                                 </label>
                                 <input v-model="form.code" type="text" placeholder="" class="input input-sm input-bordered w-full" required />
                             </div>
-                            <div class="form-control basis-3/6">
+                        </div>
+                        
+                        <div class="flex flex-row w-full space-x-4">
+                            
+                            <div class="form-control basis-4/6">
                                 <label class="label">
                                     <span class="label-text">Documento</span>
                                 </label>
@@ -108,6 +112,11 @@
                                         <option value="other">OTRO</option>
                                     </select>
                                     <input v-model="form.document_number" type="text" placeholder="" class="input input-sm input-bordered w-full"  />
+                                    <button v-if="form.document_type==='ruc'"
+                                            @click.prevent="searchRUC"
+                                            class="btn btn-sm bg-gray-100 hover:bg-gray-300 text-indigo-600 border-gray-300 hover:border-gray-400 px-3 py-0">
+                                                <MagnifyingGlassIcon class="w-5 h-5"></MagnifyingGlassIcon>
+                                    </button>
                                 </div>
                             </div>
                             <div class="form-control basis-2/6">
@@ -236,7 +245,7 @@
     import Pagination from '@/Components/Pagination.vue'
     import axios from 'axios';
     import { useToast } from "vue-toastification";
-    import { PencilIcon,TrashIcon,DocumentIcon,PlusIcon,InboxIcon } from '@heroicons/vue/24/solid';
+    import { PencilIcon,TrashIcon,DocumentIcon,PlusIcon,InboxIcon,MagnifyingGlassIcon } from '@heroicons/vue/24/solid';
 
     //const options = {};
     //Vue.use(Toast, options);
@@ -255,6 +264,7 @@
             DocumentIcon,
             InboxIcon,
             PlusIcon,
+            MagnifyingGlassIcon,
         },
         setup() {
             // Get toast interface
@@ -394,7 +404,23 @@
                 this.form.payment_phone = null;
                 this.form.payment_contact = null;
                 //console.log(this.select);
-            }
+            },
+            searchRUC(){
+                if(this.form.document_number!=''){
+                    axios.get(`/search/ruc/${this.form.document_number}`).then( response =>{
+                        console.log(response.data);
+                        if(response.data.success){
+                            this.form.name = response.data.data.name;
+                            this.form.address = response.data.data.address;
+                        }
+                        else{
+                            this.toast.error(response.data.message, this.toast_options);
+                        }
+                    }).catch( errors => {
+                        console.log(response.errors);
+                    });
+                }
+            },
         },
         props: {
             items: Object,
