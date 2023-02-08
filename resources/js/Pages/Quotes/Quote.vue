@@ -71,6 +71,11 @@
                                     <option value="other">OTRO</option>
                                 </select>
                                 <input v-model="form.document_number" type="text" placeholder="" class="input input-sm input-bordered w-full"  />
+                                <button v-if="form.document_type==='ruc'"
+                                        @click.prevent="searchRUC"
+                                        class="btn btn-sm bg-gray-100 hover:bg-gray-300 text-indigo-600 border-gray-300 hover:border-gray-400 px-3 py-0">
+                                            <MagnifyingGlassIcon class="w-5 h-5"></MagnifyingGlassIcon>
+                                </button>
                             </div>
                         </div>
                 </div>
@@ -533,7 +538,7 @@
     import axios from 'axios';
     import Datepicker from '@vuepic/vue-datepicker';
     import '@vuepic/vue-datepicker/dist/main.css';
-    import { XCircleIcon,PlusCircleIcon,InboxIcon,DocumentIcon,ArrowSmallLeftIcon } from '@heroicons/vue/24/solid'
+    import { XCircleIcon,PlusCircleIcon,InboxIcon,DocumentIcon,ArrowSmallLeftIcon,MagnifyingGlassIcon } from '@heroicons/vue/24/solid'
     /*import VueMultiselect from 'vue-multiselect';
     import Multiselect from '@vueform/multiselect'
     import {throttle} from "lodash";*/
@@ -553,6 +558,7 @@
             InboxIcon,
             ArrowSmallLeftIcon,
             DocumentIcon,
+            MagnifyingGlassIcon,
         },
         setup() {
             //const scheduledDate = ref(new Date().setHours(8,0,0));
@@ -1249,6 +1255,17 @@
             onClickClose(){
                 this.showmodal=null;
                 if(this.method==='post') window.location.href = route('quotes.index');
+            },
+            searchRUC(){
+                if(this.form.document_number!=''){
+                    axios.get(`/search/ruc/${this.form.document_number}`).then( response =>{
+                        console.log(response.data);
+                        this.form.name = response.data.name;
+                        this.form.address = response.data.address;
+                    }).catch( errors => {
+                        console.log(response.errors);
+                    });
+                }
             },
             submit() {
                 var filteredServices = this.quoteServices.filter(function(value){
