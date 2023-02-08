@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\ExchangeController;
 use App\Http\Controllers\PartController;
 use App\Http\Controllers\QuoteController;
@@ -48,7 +49,8 @@ Route::middleware([
     Route::resource('customers', CustomerController::class);
     Route::resource('services', ServiceController::class);
     Route::resource('parts', PartController::class);
+    Route::get('search/ruc/{number}', [DocumentController::class, 'ruc'])->name('search.ruc');
 });
 Route::get('quotes/pdf/{extid}', [QuoteController::class, 'getPDF'])->name('quotes.pdf');
-Route::get('exchanges_createtoday', [ExchangeController::class, 'createToday'])->name('exchanges.createtoday');
-Route::get('exchanges_updatetoday', [ExchangeController::class, 'updateToday'])->name('exchanges.updatetoday');
+//Route::get('exchanges_createtoday', [ExchangeController::class, 'createToday'])->name('exchanges.createtoday');
+//Route::get('exchanges_updatetoday', [ExchangeController::class, 'updateToday'])->name('exchanges.updatetoday');
