@@ -23,35 +23,35 @@ use PDF;
 class QuoteController extends Controller
 {
     protected $quote;
-    protected $exchange_rate;
-    protected $exchange_sell;
+    // protected $exchange_rate;
+    // protected $exchange_sell;
+    protected $exchange;
 
     public function __construct()
     {
         $today= Carbon::today('America/Lima')->isoFormat('YYYY-MM-DD');
-        $exchange = Exchange::where('date',$today)->first();
-        if(is_null($exchange)){
+        $this->exchange = Exchange::where('date',$today)->first();
+        if(is_null($this->exchange)){
             app('App\Http\Controllers\ExchangeController')->createToday();
             app('App\Http\Controllers\ExchangeController')->updateToday();
-            $exchange = Exchange::orderBy('id','DESC')->first();
+            $this->exchange = Exchange::orderBy('id','DESC')->first();
         }
-        $this->exchange_rate = $exchange->exchange_rate;
-        $this->exchange_sell = $exchange->sell;
+        //$this->exchange_rate = $exchange->exchange_rate;
+        //$this->exchange_sell = $exchange->sell;
     }
 
     public function index(){
         $quotes = Quote::where('status','<>','deleted')->orderBy('id','DESC')->paginate(10);
         return Inertia::render('Quotes/All', [
             'quotes' => $this->transform($quotes),
-            'exchange_sell' =>  $this->exchange_sell,
+            'exchange' =>  $this->exchange,
         ]);
     }
 
     public function create(){
         return Inertia::render('Quotes/Quote', [
             'servicesparts' => $this->servicesparts(),
-            'exchange_rate' =>  $this->exchange_rate,
-            'exchange_sell' =>  $this->exchange_sell,
+            'exchange' =>  $this->exchange,
             'default_payday' => intval(Setting::where('parameter','default_payday')->first()->value),
         ]);
         //return $this->servicesparts();
@@ -62,8 +62,7 @@ class QuoteController extends Controller
         if($quote->status === 'deleted') return redirect()->route('quotes.index');
         return Inertia::render('Quotes/Quote', [
             'servicesparts' => $this->servicesparts(),
-            'exchange_rate' =>  $this->exchange_rate,
-            'exchange_sell' =>  $this->exchange_sell,
+            'exchange' =>  $this->exchange,
             'dataquote' => $quote,
         ]);
     }

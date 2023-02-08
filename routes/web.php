@@ -3,6 +3,7 @@
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\ExchangeController;
+use App\Http\Controllers\GroupController;
 use App\Http\Controllers\PartController;
 use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\ServiceController;
@@ -49,6 +50,7 @@ Route::middleware([
     Route::resource('customers', CustomerController::class);
     Route::resource('services', ServiceController::class);
     Route::resource('parts', PartController::class);
+    Route::resource('groups', GroupController::class);
     Route::get('search/ruc/{number}', [DocumentController::class, 'ruc'])->name('search.ruc');
 });
 Route::get('quotes/pdf/{extid}', [QuoteController::class, 'getPDF'])->name('quotes.pdf');

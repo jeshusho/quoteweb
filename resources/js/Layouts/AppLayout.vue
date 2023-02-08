@@ -83,6 +83,9 @@ const logout = () => {
                                             Repuestos
                                         </DropdownLink>
 
+                                        <DropdownLink :href="route('groups.index')">
+                                            Grupos
+                                        </DropdownLink>
                                     </template>
                                 </Dropdown>
                             </div>

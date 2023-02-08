@@ -71,7 +71,27 @@ class ExchangeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $data = null;
+        $success = false;
+        try {
+            $sell = $request->input('sell');
+            Exchange::where('id',$id)->update([
+                'sell' => $sell,
+                'exchange_rate' => 1/$sell
+            ]);
+            $data = Exchange::find($id);
+            $message="Tipo de cambio actualizado";
+            $success=true;
+        } catch (Throwable $e) {
+            //return $e;
+            report($e);
+            $message = 'Hubo un error al actualizar el tipo de cambio';
+        }
+        return[
+            'success' => $success,
+            'message' => $message,
+            'data' => $data
+        ];
     }
 
     /**

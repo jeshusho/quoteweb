@@ -7,7 +7,27 @@
                     <span v-else>Presupuesto No. {{ this.dataquote.number }}</span>
                 </h2>
                 <div class="flex flex-row space-x-6 items-center">
-                    <span class="text-sm">Tipo de Cambio: {{this.exchange_sell}}</span>
+                    <!-- <div class="form-control">
+                        <label class="input-group input-group-md">
+                            <span class="w-36">Tipo de Cambio</span>
+                            <input v-model="this.exchange_sell_temp" 
+                                    type="number" step="0.001" placeholder="" 
+                                    class="input input-sm input-bordered w-20"
+                                    @blur="onBlurExchange"
+                                    :readonly="!exchange_edit"
+                            />
+                            <button v-if="!exchange_edit"
+                                    @click.prevent="this.exchange_edit=true;this.exchange_save=false;"
+                                    class="btn btn-sm bg-gray-100 hover:bg-gray-300 text-indigo-600 border-gray-300 hover:border-gray-400 px-3 py-0">
+                                        <PencilIcon class="w-5 h-5"></PencilIcon>
+                            </button>
+                            <button v-if="exchange_edit"
+                                    @click.prevent="onChangeExchange"
+                                    class="btn btn-sm bg-gray-100 hover:bg-gray-300 text-green-600 border-gray-300 hover:border-gray-400 px-3 py-0">
+                                        <CheckIcon class="w-5 h-5"></CheckIcon>
+                            </button>
+                        </label>
+                    </div> -->
                     <a :href="route('quotes.index')" :active="route().current('quotes.index')"
                         class="bg-indigo-600 hover:bg-indigo-800 text-white font-bold py-2 px-4 rounded flex flex-row space-x-2 text-sm items-center">
                         <ArrowSmallLeftIcon class="w-6 h-6"></ArrowSmallLeftIcon>
@@ -539,7 +559,7 @@
     import Datepicker from '@vuepic/vue-datepicker';
     import '@vuepic/vue-datepicker/dist/main.css';
     import { useToast } from "vue-toastification";
-    import { XCircleIcon,PlusCircleIcon,InboxIcon,DocumentIcon,ArrowSmallLeftIcon,MagnifyingGlassIcon } from '@heroicons/vue/24/solid'
+    import { XCircleIcon,PlusCircleIcon,InboxIcon,DocumentIcon,ArrowSmallLeftIcon,MagnifyingGlassIcon,PencilIcon,CheckIcon } from '@heroicons/vue/24/solid'
     /*import VueMultiselect from 'vue-multiselect';
     import Multiselect from '@vueform/multiselect'
     import {throttle} from "lodash";*/
@@ -560,6 +580,8 @@
             ArrowSmallLeftIcon,
             DocumentIcon,
             MagnifyingGlassIcon,
+            PencilIcon,
+            CheckIcon
         },
         setup() {
             //const scheduledDate = ref(new Date().setHours(8,0,0));
@@ -618,6 +640,9 @@
         },
         mounted(){
             //console.log(this.scheduledDate);
+            this.exchange_sell = this.exchange.sell;
+            this.exchange_sell_temp = this.exchange.sell;
+            this.exchange_rate = this.exchange.exchange_rate;
             this.form.payday = this.default_payday;
             if(this.dataquote!==undefined){
                 this.factor2 = this.dataquote.factor2;
@@ -686,6 +711,11 @@
                 showmodal:null,
                 er:1,
                 symbol:'S/.',
+                exchange_sell:null,
+                exchange_rate:null,
+                exchange_edit:false,
+                exchange_save:false,
+                exchange_sell_temp:null,
                 customers: {
                     type: Array,
                     default: () => []
@@ -788,7 +818,7 @@
                 //}
             },
             onSelectedCustomer(customer) {
-                console.log(customer);
+                //console.log(customer);
                 this.selectedCustomer = customer;
                 this.form.customer_id = customer.id;
                 this.form.document_type = customer.document_type;
@@ -1291,11 +1321,48 @@
                     });
                 }
             },
+            async onChangeExchange(){
+                this.exchange_sell= this.exchange_sell_temp;
+                this.exchange_edit=false;
+                this.exchange_save=true;
+                this.exchange.sell=this.exchange_sell;
+                await axios.put(`/exchanges/${this.exchange.id}`,this.exchange).then( response =>{
+                        if(response.data.success){
+                            //console.log(response.data);
+                           this.exchange_rate = response.data.data.exchange_rate;
+                           this.toast.success(response.data.message, this.toast_options);
+                           if(this.quoteServices.length>0) this.onChangeCurrency();
+                        }
+                        else{
+                            this.toast.error(response.data.message, this.toast_options);
+                        }
+                    }).catch( errors => {
+                        console.log(response.errors);
+                    });                
+            },
+            onBlurExchange(){
+                setTimeout(function(){
+                   if(this.exchange_edit && !this.exchange_save){
+                        this.exchange_sell_temp= this.exchange_sell;
+                        this.exchange_edit=false;
+                        this.exchange_save=true;
+                   }
+                   
+                }.bind(this, this.exchange_edit,this.exchange_save,this.exchange_sell, this.exchange_sell_temp), 1000);
+            },
             submit() {
                 var filteredServices = this.quoteServices.filter(function(value){
                     return value.service_id !== null
                 })
+                var filteredParts = this.quoteParts.filter(function(value){
+                    return value.part_id !== null
+                })
+                var filteredNotes = this.quoteNotes.filter(function(value){
+                    return value.description !== null && value.description !== ''
+                })
                 this.quoteServices = filteredServices;
+                this.quoteParts = filteredParts;
+                this.quoteNotes = filteredNotes;
                 if(this.quoteServices.length>0){
                     this.form.factor2 = this.factor2;
                     this.form.services = this.quoteServices;
@@ -1339,8 +1406,7 @@
         props: {
             servicesparts: Object,
             dataquote: Object,
-            exchange_rate: Number,
-            exchange_sell: Number,
+            exchange: Object,
             default_payday: Number,
         },
     }

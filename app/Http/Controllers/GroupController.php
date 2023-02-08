@@ -3,18 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\Group;
-use App\Models\Part;
+
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Throwable;
 
-class PartController extends Controller
+class GroupController extends Controller
 {
     protected $items;
 
     public function __construct()
     {
-        $this->items=Part::where('status',true)->orderBy('description','ASC')->paginate(20);
+        $this->items=Group::where('status',true)->orderBy('description','ASC')->paginate(20);
     }
 
     /**
@@ -24,7 +24,7 @@ class PartController extends Controller
      */
     public function index(){
         
-        return Inertia::render('Parts/All', [
+        return Inertia::render('Groups/All', [
             'items' => $this->transform($this->items),
         ]);
     }
@@ -52,7 +52,7 @@ class PartController extends Controller
 
         try {
             $data = $this->mergeData($request);
-            $item = Part::create($data);
+            $item = Group::create($data);
             $message = "El repuesto '". $item->description .  "' fue creado con éxito.";
         } catch (Throwable $e) {
             report($e);
@@ -62,7 +62,7 @@ class PartController extends Controller
         }
 
         
-        return Inertia::render('Parts/All', [
+        return Inertia::render('Groups/All', [
             'items' => $this->transform($this->items),
             'message' => $message,
             'response' => $response,
@@ -77,7 +77,7 @@ class PartController extends Controller
      */
     public function show($id)
     {
-        return redirect()->route('parts.index');
+        return redirect()->route('groups.index');
     }
 
     /**
@@ -88,7 +88,7 @@ class PartController extends Controller
      */
     public function edit($id)
     {
-        return redirect()->route('parts.index');
+        return redirect()->route('groups.index');
     }
 
     /**
@@ -106,8 +106,8 @@ class PartController extends Controller
 
         try {
             $data = $request->all();
-            Part::where('id',$id)->update($data);
-            $item = Part::find($id);
+            Group::where('id',$id)->update($data);
+            $item = Group::find($id);
 
             $message = "El repuesto '". $item->description .  "' se actualizó con éxito.";
         } catch (Throwable $e) {
@@ -116,8 +116,8 @@ class PartController extends Controller
             $response='Error';
             $message = 'Hubo un error al actualizar el repuesto';
         }
-        $this->items=Part::where('status',true)->orderBy('description','ASC')->paginate(20);
-        return Inertia::render('Parts/All', [
+        $this->items=Group::where('status',true)->orderBy('description','ASC')->paginate(20);
+        return Inertia::render('Groups/All', [
             'items' => $this->transform($this->items),
             'message' => $message,
             'response' => $response,
@@ -132,11 +132,11 @@ class PartController extends Controller
      */
     public function destroy($id)
     {
-        $item = Part::find($id);
+        $item = Group::find($id);
         $item->status = false;
         $item->save();
-        $this->items=Part::where('status',true)->orderBy('description','ASC')->paginate(20);
-        return Inertia::render('Parts/All', [
+        $this->items=Group::where('status',true)->orderBy('description','ASC')->paginate(20);
+        return Inertia::render('Groups/All', [
             'items' => $this->transform($this->items),
             'message' => 'Se eliminó el repuesto ' . $item->description,
             'response' => 'Delete',

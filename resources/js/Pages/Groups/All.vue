@@ -3,13 +3,13 @@
         <template  #header>
             <div class="flex justify-between">
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                    Repuestos
+                    Grupos
                 </h2>
                 <div class="flex flex-row space-x-6 items-center">
                     <button @click.prevent="onNew"
                         class="bg-indigo-600 hover:bg-indigo-800 text-white font-bold py-2 px-4 rounded flex flex-row space-x-2 text-sm items-center">
                         <PlusIcon class="w-6 h-6"></PlusIcon>
-                        <span>NUEVO REPUESTO</span>
+                        <span>NUEVO GRUPO</span>
                     </button>
                 </div>
                 
@@ -65,13 +65,13 @@
                 </tbody>
             </table>
             <div v-else class="bg-red-100 border border-red-400 p-3 rounded-lg text-red-800 mt-5 text-left max-w-xl mx-auto">
-                No hay repuestos creados aún
+                No hay grupos creados aún
             </div>
         </div>
         <jet-modal :show="showmodal" :closeable="true" @close="showmodal = null" maxWidth="2xl">
             <div class="py-6 mb-4 max-w-xl mx-auto">
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight py-4">
-                    <span v-if="this.select.length===0">Nuevo Repuesto</span>
+                    <span v-if="this.select.length===0">Nuevo Grupo</span>
                     <span v-else>Editar servicio: {{ this.select.description }}</span>
                 </h2>
                 <hr>
@@ -166,17 +166,6 @@
                 icon: true,
                 rtl: false
             };
-
-            // Use it!
-            //toast("I'm a toast!");
-
-            // or with options
-            // toast.success("My toast content", {
-            //     timeout: 2000
-            // });
-            // These options will override the options defined in the "app.use" plugin registration for this specific toast
-
-            // Make it available inside methods
             return { toast,toast_options }
         },
         data() {
@@ -188,7 +177,7 @@
                 action: null,
                 select:[],
                 item:[],
-                resource:'parts',
+                resource:'groups',
                 form: this.$inertia.form({
                     id: null,
                     description:null,

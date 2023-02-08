@@ -6,7 +6,27 @@
                     Presupuestos
                 </h2>
                 <div class="flex flex-row space-x-6 items-center">
-                    <span class="text-sm">Tipo de Cambio: {{this.exchange_sell}}</span>
+                    <div class="form-control">
+                        <label class="input-group input-group-md">
+                            <span class="w-36">Tipo de Cambio</span>
+                            <input v-model="this.exchange_sell_temp" 
+                                    type="number" step="0.001" placeholder="" 
+                                    class="input input-sm input-bordered w-20"
+                                    @blur="onBlurExchange"
+                                    :readonly="!exchange_edit"
+                            />
+                            <button v-if="!exchange_edit"
+                                    @click.prevent="this.exchange_edit=true;this.exchange_save=false;"
+                                    class="btn btn-sm bg-gray-100 hover:bg-gray-300 text-indigo-600 border-gray-300 hover:border-gray-400 px-3 py-0">
+                                        <PencilIcon class="w-5 h-5"></PencilIcon>
+                            </button>
+                            <button v-if="exchange_edit"
+                                    @click.prevent="onChangeExchange"
+                                    class="btn btn-sm bg-gray-100 hover:bg-gray-300 text-green-600 border-gray-300 hover:border-gray-400 px-3 py-0">
+                                        <CheckIcon class="w-5 h-5"></CheckIcon>
+                            </button>
+                        </label>
+                    </div>
                     <a :href="route('quotes.create')" :active="route().current('quotes.create')"
                         class="bg-indigo-600 hover:bg-indigo-800 text-white font-bold py-2 px-4 rounded flex flex-row space-x-2 text-sm items-center">
                         <PlusIcon class="w-6 h-6"></PlusIcon>
@@ -132,7 +152,8 @@
     import JetModal from '@/Components/Modal.vue';
     import Pagination from '@/Components/Pagination.vue'
     import axios from 'axios';
-    import { PencilIcon,TrashIcon,DocumentIcon,PlusIcon } from '@heroicons/vue/24/solid'
+    import { useToast } from "vue-toastification";
+    import { PencilIcon,TrashIcon,DocumentIcon,PlusIcon,CheckIcon } from '@heroicons/vue/24/solid'
 
     export default {
         components: {
@@ -147,6 +168,31 @@
             TrashIcon,
             DocumentIcon,
             PlusIcon,
+            CheckIcon,
+        },
+        setup() {
+            // Get toast interface
+            const toast = useToast();
+            const toast_options = {
+                position: "bottom-left",
+                timeout: 3000,
+                closeOnClick: true,
+                pauseOnFocusLoss: true,
+                pauseOnHover: true,
+                draggable: true,
+                draggablePercent: 0.6,
+                showCloseButtonOnHover: false,
+                hideProgressBar: true,
+                closeButton: "button",
+                icon: true,
+                rtl: false
+            };
+            return { toast,toast_options }
+        },
+        mounted(){
+            this.exchange_sell = this.exchange.sell;
+            this.exchange_sell_temp = this.exchange.sell;
+            this.exchange_rate = this.exchange.exchange_rate;
         },
         data() {
             return{
@@ -154,6 +200,11 @@
                 method: null,
                 action: null,
                 selectQuote:[],
+                exchange_sell:null,
+                exchange_rate:null,
+                exchange_edit:false,
+                exchange_save:false,
+                exchange_sell_temp:null,
                 form: this.$inertia.form({
                     id: null,
                 }),
@@ -173,11 +224,39 @@
                 this.selectQuote=[];
                 this.method=null;
                 this.action=null;
+            },
+            async onChangeExchange(){
+                this.exchange_sell= this.exchange_sell_temp;
+                this.exchange_edit=false;
+                this.exchange_save=true;
+                this.exchange.sell=this.exchange_sell;
+                await axios.put(`/exchanges/${this.exchange.id}`,this.exchange).then( response =>{
+                        if(response.data.success){
+                            console.log(response.data);
+                           this.exchange_rate = response.data.data.exchange_rate;
+                           this.toast.success(response.data.message, this.toast_options);
+                        }
+                        else{
+                            this.toast.error(response.data.message, this.toast_options);
+                        }
+                    }).catch( errors => {
+                        console.log(response.errors);
+                    });                
+            },
+            onBlurExchange(){
+                setTimeout(function(){
+                   if(this.exchange_edit && !this.exchange_save){
+                        this.exchange_sell_temp= this.exchange_sell;
+                        this.exchange_edit=false;
+                        this.exchange_save=true;
+                   }
+                   
+                }.bind(this, this.exchange_edit,this.exchange_save,this.exchange_sell, this.exchange_sell_temp), 1000);
             }
         },
         props: {
             quotes: Object,
-            exchange_sell: Number,
+            exchange: Object,
         },
     }
 </script>
