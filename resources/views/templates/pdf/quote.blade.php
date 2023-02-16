@@ -284,7 +284,7 @@
                 <tr>
                     <td width="20%" style="font-size: 11px;">
                         <div>
-                            <img src="{{ Vite::asset('resources/images/logo.png') }}" width="81px" height="60px">
+                            <img src="{{ Vite::asset('resources/images/logo2.png') }}" width="81px" height="60px">
                         </div>
                     </td>
                     <td>
