@@ -15,12 +15,12 @@
                                     @blur="onBlurExchange"
                                     :readonly="!exchange_edit"
                             />
-                            <button v-if="!exchange_edit"
+                            <button v-if="!exchange_edit&&isAdmin"
                                     @click.prevent="this.exchange_edit=true;this.exchange_save=false;"
                                     class="btn btn-sm bg-gray-100 hover:bg-gray-300 text-indigo-600 border-gray-300 hover:border-gray-400 px-3 py-0">
                                         <PencilIcon class="w-5 h-5"></PencilIcon>
                             </button>
-                            <button v-if="exchange_edit"
+                            <button v-if="exchange_edit&&isAdmin"
                                     @click.prevent="onChangeExchange"
                                     class="btn btn-sm bg-gray-100 hover:bg-gray-300 text-green-600 border-gray-300 hover:border-gray-400 px-3 py-0">
                                         <CheckIcon class="w-5 h-5"></CheckIcon>
@@ -193,12 +193,17 @@
             this.exchange_sell = this.exchange.sell;
             this.exchange_sell_temp = this.exchange.sell;
             this.exchange_rate = this.exchange.exchange_rate;
+            let rolesadm = this.$page.props.user.roles.filter(function(value){
+                return value.id === 1;
+            });
+            this.isAdmin = rolesadm.length>0;
         },
         data() {
             return{
                 showmodal:null,
                 method: null,
                 action: null,
+                isAdmin: null,
                 selectQuote:[],
                 exchange_sell:null,
                 exchange_rate:null,

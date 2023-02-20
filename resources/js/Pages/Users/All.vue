@@ -1,15 +1,15 @@
 <template>
-    <AppLayout title="Grupos">
+    <AppLayout title="Usuarios">
         <template  #header>
             <div class="flex justify-between">
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                    Grupos
+                    Usuarios
                 </h2>
                 <div class="flex flex-row space-x-6 items-center">
                     <button @click.prevent="onNew"
                         class="bg-indigo-600 hover:bg-indigo-800 text-white font-bold py-2 px-4 rounded flex flex-row space-x-2 text-sm items-center">
                         <PlusIcon class="w-6 h-6"></PlusIcon>
-                        <span>NUEVO GRUPO</span>
+                        <span>NUEVO USUARIO</span>
                     </button>
                 </div>
                 
@@ -17,13 +17,15 @@
 
         </template>
 
-        <div class="container mx-auto max-w-3xl my-10 overflow-x-auto">
+        <div class="container mx-auto max-w-4xl my-10 overflow-x-auto">
             <table v-if="items.data.length>0" class="table table-zebra w-full">
                 <!-- head -->
                 <thead>
                 <tr>
                     <th class="w-1/12 px-2 py-4 text-center"></th>
-                    <th class="w-9/12 px-2 py-4">Descripción</th>
+                    <th class="w-3/12 px-2 py-4">Nombre</th>
+                    <th class="w-3/12 px-2 py-4">E-mail</th>
+                    <th class="w-3/12 px-2 py-4">Roles</th>
                     <th class="w-1/12 px-2 py-4 text-center">Acción</th>
                 </tr>
                 </thead>
@@ -35,13 +37,19 @@
                         {{ index+1 }}
                     </td>
                     <td class="px-2 py-4">
-                        {{ item.description }}
+                        {{ item.name }}
+                    </td>
+                    <td class="px-2 py-4">
+                        {{ item.email }}
+                    </td>
+                    <td class="px-2 py-4">
+                        {{ item.strRoles }}
                     </td>
                     <td class="px-2 py-4 flex flex-row justify-start space-x-4">                       
                         <button @click.prevent="onEdit(item)">
                             <PencilIcon class="h-6 w-6 text-blue-700"/>
                         </button>
-                        <button @click.prevent="onDelete(item)">
+                        <button v-if="item.id>1" @click.prevent="onDelete(item)">
                             <TrashIcon class="h-6 w-6 text-red-700"/>
                         </button>
                         
@@ -65,29 +73,62 @@
                 </tbody>
             </table>
             <div v-else class="bg-red-100 border border-red-400 p-3 rounded-lg text-red-800 mt-5 text-left max-w-xl mx-auto">
-                No hay grupos creados aún
+                No hay usuarios creados aún
             </div>
         </div>
-        <jet-modal :show="showmodal" :closeable="true" @close="showmodal = null" maxWidth="2xl">
-            <div class="py-6 mb-4 max-w-xl mx-auto">
+        <jet-modal :show="showmodal" :closeable="true" @close="showmodal = null" maxWidth="xl">
+            <div class="py-6 mb-4 max-w-lg mx-auto">
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight py-4">
-                    <span v-if="this.select.length===0">Nuevo Grupo</span>
-                    <span v-else>Editar grupo: {{ this.select.description }}</span>
+                    <span v-if="this.select.length===0">Nuevo Usuario</span>
+                    <span v-else>Editar usuario: {{ this.select.name }}</span>
                 </h2>
                 <hr>
                 <form @submit.prevent="submit" >
                     <div class="justify-center w-full">
                         <div class="flex flex-row w-full space-x-4 items-end ">
+                            <div class="form-control basis-2/5">
+                                <label class="label">
+                                    <span class="label-text">Nombre</span>
+                                </label>
+                                <input v-model="form.name" type="text" placeholder="" class="input input-bordered input-sm w-full" required />
+                            </div>
+                            <div class="form-control basis-3/5">
+                                <label class="label">
+                                    <span class="label-text">E-mail</span>
+                                </label>
+                                <input v-model="form.email" type="email" placeholder="" class="input input-bordered input-sm w-full" required />
+                            </div>
+                        </div>
+                        <div class="flex flex-row space-x-4 pt-4 items-end ">
                             <div class="form-control basis-4/5">
                                 <label class="label">
-                                    <span class="label-text">Descripción</span>
+                                    <span class="label-text">Roles:</span>
                                 </label>
-                                <input v-model="form.description" type="text" placeholder="" class="input input-bordered input-sm w-full" required />
+                            </div>
+                        </div>
+                       <div v-if="this.form.id!==1" class="flex flex-row space-x-4 items-end ">
+                            <div v-for="(item,index) in this.rolesByUser" :key="index"  class="form-control basis-2/6">
+                                <label class="label cursor-pointer justify-evenly">
+                                    <span class="label-text">{{item.title}}</span> 
+                                    <input  type="checkbox" :checked="item.value"
+                                            @change="onChangeRol(item,$event)"
+                                            class="checkbox checkbox-primary" />
+                                </label>
+                            </div>
+                        </div>
+                        <div v-else class="label justify-evenly label-text">Administrador</div>
+
+                        <div class="flex flex-row w-full space-x-4 items-end ">
+                            <div class="form-control basis-2/5">
+                                <label class="label">
+                                    <span class="label-text">Nueva contraseña</span>
+                                </label>
+                                <input v-model="form.password" type="password" placeholder="" class="input input-bordered input-sm w-full" :required="this.form.id===null" />
                             </div>
                         </div>
                        
                         <div class="flex flex-col xl:flex-row xl:max-w-4xl justify-between w-full mx-auto mt-12">
-                            <button type="submit" class="btn btn-md bg-indigo-700 hover:bg-indigo-900 xl:max-w-xs w-full mx-auto text-lg">
+                            <button type="submit" :disabled="this.form.roles.length===0" class="btn btn-md bg-indigo-700 hover:bg-indigo-900 xl:max-w-xs w-full mx-auto text-lg">
                                 <InboxIcon class="w-5 h-5"></InboxIcon>
                                 <span class="ml-2">Guardar</span>
                             </button>
@@ -177,10 +218,14 @@
                 action: null,
                 select:[],
                 item:[],
-                resource:'groups',
+                resource:'users',
+                rolesByUser:[],
                 form: this.$inertia.form({
                     id: null,
-                    description:null,
+                    name:null,
+                    email:null,
+                    password:null,
+                    roles:[],
                 }),
             }
         },
@@ -220,14 +265,44 @@
             },
             onEdit(item){
                 this.resetActions();
-                console.log(item);
                 this.select = item;
                 this.form.id = item.id;
-                this.form.description = item.description;
+                this.form.name = item.name;
+                this.form.email = item.email;
+                this.form.password = null;
+                this.form.roles = [];
+                this.rolesByUser=[];
+                this.roles.forEach(element => {
+                    let indexr = item.roles.findIndex( function(rol){
+                        return rol.id === element.id;
+                    });
+                    this.rolesByUser.push({
+                        'id': element.id,
+                        'title': element.title,
+                        'value': (indexr>=0) ? true : false,
+                     });
+                     if(indexr>=0){
+                        this.form.roles.push(element.id);
+                     }
+
+                });
 
                 this.showmodal = true;
                 this.method = 'put';
                 this.action = route(`${this.resource}.update`,[item.id]);
+            },
+            onChangeRol(item,ev){
+                //console.log(item.id);
+                //console.log(ev.target.checked);
+                if(ev.target.checked){
+                    this.form.roles.push(item.id)
+                }
+                else{
+                    let filter = this.form.roles.filter( obj => {
+                        return obj !== item.id;
+                    });
+                    this.form.roles = filter;
+                }
             },
             resetActions(){
                 this.showmodal=null;
@@ -235,13 +310,25 @@
                 this.showmodalView=null;
                 this.method=null;
                 this.action=null;
-
+                this.select=[];
                 this.form.id = null;
-                this.form.description = null;
+                this.form.name = null;
+                this.form.email = null;
+                this.form.password = null;
+                this.form.roles = [];
+                this.rolesByUser=[];
+                this.roles.forEach(element => {
+                    this.rolesByUser.push({
+                        'id': element.id,
+                        'title': element.title,
+                        'value': false,
+                     });
+                });
             },
         },
         props: {
             items: Object,
+            roles: Object,
             message: String,
             response: String,
         },

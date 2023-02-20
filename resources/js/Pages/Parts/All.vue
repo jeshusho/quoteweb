@@ -1,5 +1,5 @@
 <template>
-    <AppLayout title="Clientes">
+    <AppLayout title="Repuestos">
         <template  #header>
             <div class="flex justify-between">
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -72,7 +72,7 @@
             <div class="py-6 mb-4 max-w-xl mx-auto">
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight py-4">
                     <span v-if="this.select.length===0">Nuevo Repuesto</span>
-                    <span v-else>Editar servicio: {{ this.select.description }}</span>
+                    <span v-else>Editar repuesto: {{ this.select.description }}</span>
                 </h2>
                 <hr>
                 <form @submit.prevent="submit" >

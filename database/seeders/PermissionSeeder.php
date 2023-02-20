@@ -29,5 +29,11 @@ class PermissionSeeder extends Seeder
         // Permission::insert($permissions);
         Permission::create(['title' => 'user_access']);
         Permission::create(['title' => 'service_access']);
+        Permission::create(['title' => 'part_access']);
+        Permission::create(['title' => 'group_access']);
+        Permission::create(['title' => 'quote_access']);
+        Permission::create(['title' => 'exchange_access']);
+        Permission::create(['title' => 'customer_d_access']);
+        Permission::create(['title' => 'customer_cu_access']);
     }
 }

@@ -45,7 +45,7 @@
                         <button @click.prevent="onEdit(item)">
                             <PencilIcon class="h-6 w-6 text-blue-700"/>
                         </button>
-                        <button @click.prevent="onDelete(item)">
+                        <button @click.prevent="onDelete(item)" :class="{ hidden:!isAdmin }">
                             <TrashIcon class="h-6 w-6 text-red-700"/>
                         </button>
                         
@@ -296,6 +296,12 @@
             // Make it available inside methods
             return { toast,toast_options }
         },
+        mounted(){
+                let rolesadm = this.$page.props.user.roles.filter(function(value){
+                    return value.id === 1;
+                });
+                this.isAdmin = rolesadm.length>0;
+            },
         data() {
             return{
                 showmodal:null,
@@ -306,6 +312,7 @@
                 select:[],
                 item:[],
                 resource:'customers',
+                isAdmin:null,
                 form: this.$inertia.form({
                     id: null,
                     code:null,

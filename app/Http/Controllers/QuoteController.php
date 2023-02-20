@@ -13,6 +13,7 @@ use App\Models\QuotePart;
 use App\Models\QuoteService;
 use App\Models\Service;
 use App\Models\Setting;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -26,6 +27,7 @@ class QuoteController extends Controller
     // protected $exchange_rate;
     // protected $exchange_sell;
     protected $exchange;
+    protected $roles;
 
     public function __construct()
     {
@@ -36,6 +38,7 @@ class QuoteController extends Controller
             app('App\Http\Controllers\ExchangeController')->updateToday();
             $this->exchange = Exchange::orderBy('id','DESC')->first();
         }
+        $this->roles = User::find(auth()->id());
         //$this->exchange_rate = $exchange->exchange_rate;
         //$this->exchange_sell = $exchange->sell;
     }
@@ -45,6 +48,7 @@ class QuoteController extends Controller
         return Inertia::render('Quotes/All', [
             'quotes' => $this->transform($quotes),
             'exchange' =>  $this->exchange,
+            'roles' => $this->roles,
         ]);
     }
 

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreServiceRequest;
+use App\Http\Requests\UpdateServiceRequest;
 use App\Models\Group;
 use App\Models\Part;
 use App\Models\QuotePart;
@@ -11,6 +13,8 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Throwable;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Gate;
+use Symfony\Component\HttpFoundation\Response;
 
 class ServiceController extends Controller
 {
@@ -58,7 +62,7 @@ class ServiceController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreServiceRequest $request)
     {   
         $message = '';
         $response='OK';
@@ -94,9 +98,9 @@ class ServiceController extends Controller
             $message = "El servicio '". $item->description .  "' fue creado con éxito.";
         } catch (Throwable $e) {
             report($e);
-            return $e;
+            //return $e;
             $response='Error';
-            $message = 'Hubo un error al crear el cliente';
+            $message = 'Hubo un error al crear el servicio';
             if(count(Service::where('code',$request->input('code'))->get())>0) $message = 'Código de servicio ya existe.';
             //return false;
         }
@@ -140,7 +144,7 @@ class ServiceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateServiceRequest $request, $id)
     {
         $message = '';
         $response='OK';
@@ -202,6 +206,7 @@ class ServiceController extends Controller
      */
     public function destroy($id)
     {
+        abort_if(Gate::denies('service_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $item = Service::find($id);
         $item->status = false;
         $item->code = rand(10000,20000);

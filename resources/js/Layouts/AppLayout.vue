@@ -33,7 +33,6 @@ const logout = () => {
         <Head :title="title" />
 
         <Banner />
-
         <div class="min-h-screen bg-gray-50">
             <nav class="bg-white border-b border-gray-100">
                 <!-- Primary Navigation Menu -->
@@ -53,9 +52,14 @@ const logout = () => {
                                     Presupuestos
                                 </NavLink>
                             </div>
+                            <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                                <NavLink :href="route('customers.index')" :active="route().current('customers.index')">
+                                    Clientes
+                                </NavLink>
+                            </div>
 
                             <!-- Settings Dropdown -->
-                            <div class="ml-3 mt-4 relative" >
+                            <div class="ml-3 mt-4 relative hidden md:block" :class="{ hidden:!isAdmin }">
                                 <Dropdown align="left" width="48" >
                                     <template #trigger>
                                         <span  class="inline-flex rounded-md" >
@@ -66,10 +70,6 @@ const logout = () => {
                                     </template>
 
                                     <template #content>
-
-                                        <DropdownLink :href="route('customers.index')">
-                                            Clientes
-                                        </DropdownLink>
 
                                         <!-- <DropdownLink :href="route('exchanges.index')">
                                             Tipo de Cambio
@@ -85,6 +85,10 @@ const logout = () => {
 
                                         <DropdownLink :href="route('groups.index')">
                                             Grupos
+                                        </DropdownLink>
+
+                                        <DropdownLink :href="route('users.index')">
+                                            Usuarios
                                         </DropdownLink>
                                     </template>
                                 </Dropdown>
@@ -232,7 +236,27 @@ const logout = () => {
                             Presupuestos
                         </ResponsiveNavLink>
                     </div>
-
+                    <div class="pt-2 pb-3 space-y-1">
+                        <ResponsiveNavLink :href="route('customers.index')" :active="route().current('customers.index')">
+                            Clientes
+                        </ResponsiveNavLink>
+                    </div>
+                    <div class="border-t border-gray-100" />
+                    <div class="pl-4">Configuración</div>
+                    <div class="pt-2 pl-4 pb-3 space-y-1">
+                        <ResponsiveNavLink :href="route('services.index')">
+                            Servicios
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('parts.index')">
+                            Repuestos
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('groups.index')">
+                            Grupos
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('users.index')">
+                            Usuarios
+                        </ResponsiveNavLink>
+                    </div>
                     <!-- Responsive Settings Options -->
                     <div class="pt-4 pb-1 border-t border-gray-200">
                         <div class="flex items-center px-4">
@@ -322,3 +346,19 @@ const logout = () => {
         </div>
     </div>
 </template>
+<script>
+        export default {
+            mounted(){
+                let rolesadm = this.$page.props.user.roles.filter(function(value){
+                    return value.id === 1;
+                });
+                //console.log('rolesadm',rolesadm);
+                this.isAdmin = rolesadm.length>0;
+            },
+            data() {
+                return{
+                    isAdmin:null,
+                }
+            },
+        } 
+</script>

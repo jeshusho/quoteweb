@@ -57,7 +57,7 @@ class PartController extends Controller
         } catch (Throwable $e) {
             report($e);
             $response='Error';
-            $message = 'Hubo un error al crear el cliente';
+            $message = 'Hubo un error al crear el repuesto';
             //return false;
         }
 

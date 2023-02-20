@@ -27,7 +27,7 @@ class RoleSeeder extends Seeder
         // ];
 
         // Role::insert($roles);
-        Role::create(['title' => 'Admin']);
-        Role::create(['title' => 'User']);
+        Role::create(['title' => 'Administrador']);
+        Role::create(['title' => 'Usuario']);
     }
 }
